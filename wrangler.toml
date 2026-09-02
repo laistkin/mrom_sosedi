@@ -1,0 +1,6 @@
+name = "mrom-sosedi"
+compatibility_date = "2025-01-01"
+
+[vars]
+DATABASE_URL = "postgresql://neondb_owner:npg_ZMNWyL0ClmF7@ep-broad-leaf-aetqmw66-pooler.c-2.us-east-2.aws.neon.tech/neondb?channel_binding=require&sslmode=require"
+JWT_SECRET = "mrom-sosedi-jwt-secret-change-me-in-production"
