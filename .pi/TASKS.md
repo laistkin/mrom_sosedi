@@ -83,21 +83,22 @@
 | # | Задача | Статус |
 |---|--------|--------|
 | 7.10 | T-ID и SberID логин | ⬜ TODO |
-| 7.11 | Деплой на продакшн (после готовности платёжных данных) | ⬜ TODO |
+| 7.11 | Деплой на продакшн (после готовности платёжных данных) | 🔴 BLOCKED — см. BUG-DEPLOY-1 |
 
 ---
 
 ## 🐛 Известные баги / проблемы
 | # | Описание | Статус |
 |---|----------|--------|
-| BUG-1 | `next/link` в client-heavy компонентах вызывает шумные предупреждения Vite/HMR после хот-редоуа. Перезапуск dev сервера решает. | ⬜ Open |
+| BUG-1 | `next/link` в client-heavy компонентах вызывает шумные предупреждения Vite/HMR после хот-редоуа. Перезапуск dev сервера решает. | ✅ Fixed — заменены все `<Link>` на `<a>` (все 8 файлов) |
 | BUG-2 | Админ-пароль `sosedi2026` хранится в клиентском коде — только для демо | ✅ Fixed (Phase 4.1) — пароль перемещён в серверный route.ts, localStorage удалён |
 | BUG-8 | AdminClient.tsx ссылается на `adminSessionKey` и `adminPassword`, которые были удалены | ✅ Fixed (Phase 4.1) — убраны из AdminClient.tsx |
 | BUG-3 | Публичные суммы на страницах кампаний не пересчитываются из истории пожертвований | ✅ Fixed — автопересчёт через donationsByCampaign в CampaignList и CampaignDetail |
 | BUG-4 | `useEffect` без импорта в CampaignDetail.tsx | ✅ Fixed (Фаза 1) |
 | BUG-5 | Публичные страницы (homepage, reports, about, gallery, team) читают из localStorage/demo вместо API | ✅ Fixed (Phase 2)
 | BUG-6 | AdminClient site-content CRUD использует demo-store вместо api-site-content.ts | ✅ Fixed (Phase 2)
-| BUG-7 | PostgreSQL JSONB поля возвращаются как строки в RSC — сломал парсинг на /about, /reports и др. | ✅ Fixed (Phase 3) — добавлен safeParse() в api-site-content.ts
+| BUG-7 | PostgreSQL JSONB поля возвращаются как строки в RSC — сломал парсинг на /about, /reports и др. | ✅ Fixed (Phase 3) — добавлен safeParse() в api-site-content.ts |
+| BUG-9 | Мобильное меню (бургер) не работает — кнопка существует, но нет обработчика | ✅ Fixed — добавлено рабочее мобильное меню с анимацией и закрытием по клику вне |
 
 ---
 

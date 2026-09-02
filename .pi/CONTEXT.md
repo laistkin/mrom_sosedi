@@ -84,6 +84,22 @@ admin_users: id, username, password_hash, created_at
 - [x] 7.8 — Zod валидация, rate limiting, security utils
 - [x] 7.9 — Привязка пожертвований к пользователям + глобальные метрики
 
+## 🔴 КРИТИЧЕСКАЯ ПРОБЛЕМА: BUG-DEPLOY-1
+
+Cloudflare Pages **не поддерживает API маршруты** (`/api/*`). Все запросы к `/api/admin-auth`, `/api/campaigns` и т.д. возвращают ошибку 404.
+
+**Решение:** Деплоить через `npx wrangler deploy` (Wrangler Workers) вместо GitHub → Cloudflare Pages.
+- ✅ API маршруты работают полностью
+- ❌ Нет автодеплоя из GitHub — нужно деплоить вручную с компьютера
+
+### Что уже сделано:
+1. ✅ Создан `wrangler.toml` с `[vars]` (DATABASE_URL, JWT_SECRET)
+2. ✅ Исправлен `app/lib/db.ts` — graceful fallback при отсутствии DATABASE_URL
+3. ✅ Исправлен `app/lib/auth/jwt.ts` — cookie domain для Cloudflare Workers
+4. ✅ Заменены все `<Link>` на `<a>` в 8 файлах (навигация работает)
+5. ✅ Добавлено рабочее мобильное меню (`SiteHeader.tsx`)
+6. ✅ Удалён `vercel.json`, удалён `SafeLink.tsx`
+
 ## 🔜 Что делать дальше (приоритеты)
 
 ### БЛОКИРУЮЩЕЕ: Деплой (7.11)
