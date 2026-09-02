@@ -15,8 +15,8 @@ type AboutContent = {
   requisites: string;
 };
 
-export function AboutClient({ initialAbout }: { initialAbout: AboutContent }) {
-  const [about, setAbout] = useState<AboutContent>(initialAbout);
+export function AboutClient() {
+  const [about, setAbout] = useState<AboutContent>({ title: '', description: '', activities: [], phone: '', email: '', address: '', legalName: '', inn: '', ogrn: '', requisites: '' });
 
   useEffect(() => {
     (async () => {
