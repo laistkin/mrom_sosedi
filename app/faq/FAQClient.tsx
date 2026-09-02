@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
+
 import { readSiteContent } from '../lib/site-content/demo-site-content';
 
 export function FAQClient() {
@@ -62,12 +62,12 @@ export function FAQClient() {
             >
               Написать на почту
             </a>
-            <Link
+            <a
               href="/how-to-help"
               className="rounded-full border border-zinc-300 px-8 py-4 text-lg font-bold text-zinc-700 transition-colors hover:bg-zinc-50"
             >
               Как помочь
-            </Link>
+            </a>
           </div>
         </div>
       </section>

@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+
 import { useEffect, useMemo, useState } from 'react';
 import { formatRub, type Campaign } from '../data/campaigns';
 import { getCampaigns, getDonations } from '../lib/campaigns/api-campaign-store';
@@ -39,7 +39,7 @@ export function CampaignList({ initialCampaigns }: { initialCampaigns: Campaign[
             className="overflow-hidden rounded-[28px] bg-white shadow-[0_24px_70px_rgb(7_17_31/10%)]"
             key={campaign.id}
           >
-            <Link
+            <a
               aria-label={`Открыть сбор: ${campaign.title}`}
               className="relative block h-80 overflow-hidden bg-zinc-200"
               href={`/campaigns/${campaign.id}`}
@@ -59,7 +59,7 @@ export function CampaignList({ initialCampaigns }: { initialCampaigns: Campaign[
                   </p>
                 </div>
               </div>
-            </Link>
+            </a>
 
             <div className="-mt-8 relative rounded-t-[28px] bg-white px-4 pb-4 pt-3">
               <div className="grid grid-cols-2 gap-3">
@@ -68,12 +68,12 @@ export function CampaignList({ initialCampaigns }: { initialCampaigns: Campaign[
                   path={`/campaigns/${campaign.id}`}
                   title={campaign.title}
                 />
-                <Link
+                <a
                   className="grid h-14 place-items-center rounded-full bg-[#2f9f6b] text-base font-black text-white shadow-[0_12px_28px_rgb(47_159_107/18%)]"
                   href={`/campaigns/${campaign.id}#donation-preview`}
                 >
                   Помочь
-                </Link>
+                </a>
               </div>
 
               <div className="mt-5 grid grid-cols-2 gap-5">
@@ -98,12 +98,12 @@ export function CampaignList({ initialCampaigns }: { initialCampaigns: Campaign[
                 />
               </div>
 
-              <Link
+              <a
                 className="mt-5 block text-xl font-black leading-7 tracking-tight hover:text-[#2f7d5f]"
                 href={`/campaigns/${campaign.id}`}
               >
                 {campaign.title}
-              </Link>
+              </a>
 
               <div className="mt-5 flex items-center justify-between border-t border-zinc-200 pt-4 text-sm font-semibold text-zinc-400">
                 <span>{campaign.donors} поддержали</span>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
+
 import { readSiteContent } from '../lib/site-content/demo-site-content';
 
 export function HowToHelpClient() {
@@ -47,12 +47,12 @@ export function HowToHelpClient() {
         <p className="mt-4 max-w-xl leading-7 text-zinc-600">
           Перейдите к активным сборам и выберите тот, который откликается вашему сердцу. Каждый рубль идёт на общее дело.
         </p>
-        <Link
+        <a
           href="/#collections"
           className="mt-8 inline-block rounded-full bg-[#2f9f6b] px-8 py-4 text-lg font-bold text-white transition-colors hover:bg-[#258a5d]"
         >
           Перейти к сборам →
-        </Link>
+        </a>
       </section>
 
       {/* FAQ preview */}
@@ -62,12 +62,12 @@ export function HowToHelpClient() {
           <p className="mt-4 leading-7 text-zinc-600">
             Посмотрите ответы на частые вопросы или свяжитесь с нами.
           </p>
-          <Link
+          <a
             href="/faq"
             className="mt-6 inline-block rounded-full border border-[#2f9f6b] px-8 py-4 text-lg font-bold text-[#2f9f6b] transition-colors hover:bg-[#eef6f2]"
           >
             Читать FAQ →
-          </Link>
+          </a>
         </div>
       </section>
     </div>

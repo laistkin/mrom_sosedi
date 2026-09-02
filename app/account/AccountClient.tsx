@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+
 import type { FormEvent } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { formatRub, type DemoDonation } from '../lib/donations/demo-donations';
@@ -297,12 +297,12 @@ export function AccountClient() {
                 </p>
                 <h2 className="mt-2 text-2xl font-black">Ваши пожертвования</h2>
               </div>
-              <Link
+              <a
                 className="rounded-full bg-[#2f9f6b] px-5 py-3 text-sm font-black text-white"
                 href="/#collections"
               >
                 Помочь
-              </Link>
+              </a>
             </div>
 
             <div className="mt-6 space-y-3">

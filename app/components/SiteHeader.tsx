@@ -1,10 +1,10 @@
-import Link from 'next/link';
+
 
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-30 rounded-b-[28px] border-b border-black/5 bg-white/95 px-4 py-3 shadow-[0_14px_45px_rgb(7_17_31/8%)] backdrop-blur md:px-8">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
-        <Link className="flex min-w-0 items-center gap-3" href="/">
+        <a className="flex min-w-0 items-center gap-3" href="/">
           <img
             alt="Логотип МРОМ Соседи"
             className="h-10 w-10 shrink-0"
@@ -13,39 +13,39 @@ export function SiteHeader() {
           <span className="truncate text-lg font-black tracking-tight sm:text-xl">
             МРОМ Соседи
           </span>
-        </Link>
+        </a>
 
         <nav className="hidden items-center gap-2 text-sm font-semibold text-zinc-600 md:flex">
-          <Link className="rounded-full px-4 py-2 hover:bg-zinc-100" href="/">
+          <a className="rounded-full px-4 py-2 hover:bg-zinc-100" href="/">
             Сборы
-          </Link>
-          <Link className="rounded-full px-4 py-2 hover:bg-zinc-100" href="/how-to-help">
+          </a>
+          <a className="rounded-full px-4 py-2 hover:bg-zinc-100" href="/how-to-help">
             Как помочь
-          </Link>
-          <Link className="rounded-full px-4 py-2 hover:bg-zinc-100" href="/faq">
+          </a>
+          <a className="rounded-full px-4 py-2 hover:bg-zinc-100" href="/faq">
             FAQ
-          </Link>
-          <Link className="rounded-full px-4 py-2 hover:bg-zinc-100" href="/about">
+          </a>
+          <a className="rounded-full px-4 py-2 hover:bg-zinc-100" href="/about">
             О нас
-          </Link>
-          <Link className="rounded-full px-4 py-2 hover:bg-zinc-100" href="/reports">
+          </a>
+          <a className="rounded-full px-4 py-2 hover:bg-zinc-100" href="/reports">
             Отчеты
-          </Link>
-          <Link className="rounded-full px-4 py-2 hover:bg-zinc-100" href="/gallery">
+          </a>
+          <a className="rounded-full px-4 py-2 hover:bg-zinc-100" href="/gallery">
             Галерея
-          </Link>
-          <Link className="rounded-full px-4 py-2 hover:bg-zinc-100" href="/team">
+          </a>
+          <a className="rounded-full px-4 py-2 hover:bg-zinc-100" href="/team">
             Команда
-          </Link>
+          </a>
         </nav>
 
         <div className="flex items-center gap-2">
-          <Link
+          <a
             className="hidden rounded-full border border-zinc-200 px-4 py-2 text-sm font-semibold text-zinc-800 sm:inline-flex"
             href="/account"
           >
             Войти
-          </Link>
+          </a>
           <button
             aria-label="Открыть меню"
             className="grid h-12 w-12 place-items-center rounded-2xl border border-zinc-200 bg-white"

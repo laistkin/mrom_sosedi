@@ -1,4 +1,4 @@
-import Link from 'next/link';
+
 import { CampaignList } from './components/CampaignList';
 import { SiteHeader } from './components/SiteHeader';
 import { getCampaigns } from './lib/campaigns/api-campaign-store';
@@ -59,7 +59,7 @@ export default async function Home() {
       </section>
 
       <section className="mx-auto grid max-w-6xl gap-4 px-4 pb-16 md:grid-cols-3 md:px-8">
-        <Link className="rounded-[24px] bg-white p-6 hover:shadow-[0_18px_45px_rgb(7_17_31/8%)]" href="/how-to-help">
+        <a className="rounded-[24px] bg-white p-6 hover:shadow-[0_18px_45px_rgb(7_17_31/8%)]" href="/how-to-help">
           <p className="text-sm font-bold uppercase tracking-[0.18em] text-zinc-400">
             Раздел
           </p>
@@ -67,8 +67,8 @@ export default async function Home() {
           <p className="mt-3 leading-7 text-zinc-600">
             Пошаговое руководство по пожертвованиям и поддержке центра.
           </p>
-        </Link>
-        <Link className="rounded-[24px] bg-white p-6 hover:shadow-[0_18px_45px_rgb(7_17_31/8%)]" href="/faq">
+        </a>
+        <a className="rounded-[24px] bg-white p-6 hover:shadow-[0_18px_45px_rgb(7_17_31/8%)]" href="/faq">
           <p className="text-sm font-bold uppercase tracking-[0.18em] text-zinc-400">
             Раздел
           </p>
@@ -76,8 +76,8 @@ export default async function Home() {
           <p className="mt-3 leading-7 text-zinc-600">
             Ответы на популярные вопросы о пожертвованиях и отчётности.
           </p>
-        </Link>
-        <Link className="rounded-[24px] bg-white p-6 hover:shadow-[0_18px_45px_rgb(7_17_31/8%)]" href="/gallery">
+        </a>
+        <a className="rounded-[24px] bg-white p-6 hover:shadow-[0_18px_45px_rgb(7_17_31/8%)]" href="/gallery">
           <p className="text-sm font-bold uppercase tracking-[0.18em] text-zinc-400">
             Раздел
           </p>
@@ -85,11 +85,11 @@ export default async function Home() {
           <p className="mt-3 leading-7 text-zinc-600">
             Фотографии мероприятий, занятий и жизни центра.
           </p>
-        </Link>
+        </a>
       </section>
 
       <section className="mx-auto grid max-w-6xl gap-4 px-4 pb-16 md:grid-cols-3 md:px-8">
-        <Link className="rounded-[24px] bg-white p-6 hover:shadow-[0_18px_45px_rgb(7_17_31/8%)]" href="/about" id="about">
+        <a className="rounded-[24px] bg-white p-6 hover:shadow-[0_18px_45px_rgb(7_17_31/8%)]" href="/about" id="about">
           <p className="text-sm font-bold uppercase tracking-[0.18em] text-zinc-400">
             Раздел
           </p>
@@ -97,8 +97,8 @@ export default async function Home() {
           <p className="mt-3 leading-7 text-zinc-600">
             Информация о МРОМ, контактах, реквизитах и юридических данных.
           </p>
-        </Link>
-        <Link className="rounded-[24px] bg-white p-6 hover:shadow-[0_18px_45px_rgb(7_17_31/8%)]" href="/reports" id="reports">
+        </a>
+        <a className="rounded-[24px] bg-white p-6 hover:shadow-[0_18px_45px_rgb(7_17_31/8%)]" href="/reports" id="reports">
           <p className="text-sm font-bold uppercase tracking-[0.18em] text-zinc-400">
             Раздел
           </p>
@@ -106,8 +106,8 @@ export default async function Home() {
           <p className="mt-3 leading-7 text-zinc-600">
             Посты с фото, документами, мероприятиями и потраченными средствами.
           </p>
-        </Link>
-        <Link className="rounded-[24px] bg-white p-6 hover:shadow-[0_18px_45px_rgb(7_17_31/8%)]" href="/team">
+        </a>
+        <a className="rounded-[24px] bg-white p-6 hover:shadow-[0_18px_45px_rgb(7_17_31/8%)]" href="/team">
           <p className="text-sm font-bold uppercase tracking-[0.18em] text-zinc-400">
             Раздел
           </p>
@@ -115,7 +115,7 @@ export default async function Home() {
           <p className="mt-3 leading-7 text-zinc-600">
             Люди, которые стоят за проектом местного исламского центра.
           </p>
-        </Link>
+        </a>
       </section>
     </main>
   );

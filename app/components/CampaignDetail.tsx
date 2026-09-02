@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+
 import { useEffect, useMemo, useState } from 'react';
 import { formatRub, type Campaign } from '../data/campaigns';
 import { getCampaignById } from '../lib/campaigns/api-campaign-store';
@@ -36,12 +36,12 @@ export function CampaignDetail({
           <p className="mt-3 leading-7 text-zinc-600">
             Возможно, сбор скрыт в админ-панели или еще не создан.
           </p>
-          <Link
+          <a
             className="mt-6 inline-flex h-14 items-center rounded-full bg-[#2f9f6b] px-6 font-black text-white"
             href="/#collections"
           >
             Вернуться к сборам
-          </Link>
+          </a>
         </div>
       </div>
     );
@@ -55,7 +55,7 @@ export function CampaignDetail({
   return (
     <div className="mx-auto max-w-4xl px-0 pb-20 md:px-8">
       <div className="px-4 pt-8 md:px-0">
-        <Link
+        <a
           className="flex h-16 items-center justify-center gap-3 rounded-[22px] bg-white text-base font-black text-[#2f7d5f] shadow-[0_14px_45px_rgb(7_17_31/7%)]"
           href="/#collections"
         >
@@ -63,7 +63,7 @@ export function CampaignDetail({
             ←
           </span>
           Пожертвовать другим сборам
-        </Link>
+        </a>
       </div>
 
       <section className="mt-6 overflow-hidden bg-white shadow-[0_24px_70px_rgb(7_17_31/10%)] md:rounded-[30px]">

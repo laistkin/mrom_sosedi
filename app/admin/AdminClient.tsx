@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { formatRub, type Campaign } from '../data/campaigns';
@@ -581,12 +581,12 @@ export function AdminClient() {
               Войти
             </button>
           </form>
-          <Link
+          <a
             className="mt-4 inline-flex font-bold text-zinc-500"
             href="/"
           >
             Вернуться на сайт
-          </Link>
+          </a>
         </section>
       </main>
     );
@@ -603,9 +603,9 @@ export function AdminClient() {
             <h1 className="mt-2 text-3xl font-black">Управление сборами</h1>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Link className="rounded-full border border-zinc-200 bg-white px-5 py-3 font-black" href="/">
+            <a className="rounded-full border border-zinc-200 bg-white px-5 py-3 font-black" href="/">
               На сайт
-            </Link>
+            </a>
             <button
               className="rounded-full border border-zinc-200 bg-white px-5 py-3 font-black"
               onClick={resetAll}
