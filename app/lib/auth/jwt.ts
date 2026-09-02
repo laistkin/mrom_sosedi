@@ -30,17 +30,21 @@ export async function verifyToken(token: string): Promise<{ admin: true } | null
 // Cookie options for HTTP-only, Secure (production) or non-secure (dev) cookies
 export function setCookie(resHeaders: Headers, token: string): void {
   const isDev = !process.env.VERCEL_URL && !process.env.NEXT_PUBLIC_SITE_URL;
+  const hostname = getHostname();
+  const domainPart = hostname ? `Domain=.${hostname}; ` : '';
   resHeaders.set(
     'set-cookie',
-    `${COOKIE_NAME}=${token}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${COOKIE_MAX_AGE}; ${isDev ? '' : 'Secure; '}Domain=.${getHostname()}`
+    `${COOKIE_NAME}=${token}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${COOKIE_MAX_AGE}; ${isDev ? '' : 'Secure; '}${domainPart}`
   );
 }
 
 export function clearCookie(resHeaders: Headers): void {
   const isDev = !process.env.VERCEL_URL && !process.env.NEXT_PUBLIC_SITE_URL;
+  const hostname = getHostname();
+  const domainPart = hostname ? `Domain=.${hostname}; ` : '';
   resHeaders.set(
     'set-cookie',
-    `${COOKIE_NAME}=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0; ${isDev ? '' : 'Secure; '}Domain=.${getHostname()}`
+    `${COOKIE_NAME}=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0; ${isDev ? '' : 'Secure; '}${domainPart}`
   );
 }
 
