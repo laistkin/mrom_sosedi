@@ -1,33 +1,41 @@
-import { neon } from "@neondatabase/serverless";
+let _sql: any = null;
+let _initError: Error | null = null;
 
-const DATABASE_URL = process.env.DATABASE_URL;
-const DATABASE_URL_UNPOOLED = process.env.DATABASE_URL_UNPOOLED;
-
-let sql: ReturnType<typeof neon> | null = null;
-try {
-  const url = DATABASE_URL || DATABASE_URL_UNPOOLED;
-  if (url) {
-    sql = neon(url);
-  } else {
-    console.warn("[db] No DATABASE_URL set — database operations disabled");
+async function getSql() {
+  if (_sql) return _sql;
+  if (_initError) throw _initError;
+  
+  try {
+    const { neon } = await import("@neondatabase/serverless");
+    const DATABASE_URL = process.env.DATABASE_URL || process.env.DATABASE_URL_UNPOOLED;
+    
+    if (!DATABASE_URL) {
+      console.warn("[db] No DATABASE_URL set — database operations disabled");
+      _initError = new Error("No DATABASE_URL");
+      throw _initError;
+    }
+    
+    _sql = neon(DATABASE_URL);
+    return _sql;
+  } catch (err: any) {
+    console.error("[db] Failed to initialize Neon connection:", err?.message || err);
+    _initError = new Error(err?.message || "Neon init failed");
+    throw _initError;
   }
-} catch (err) {
-  console.error("[db] Failed to initialize Neon connection:", err);
 }
 
-// Safe template literal: returns empty array if DB is unavailable
-const safeSql = Object.assign(
-  async function sqlTemplate(strings: TemplateStringsArray, ...values: any[]): Promise<any[]> {
-    if (!sql) return [];
-    try {
-      const result = await sql(strings as any, ...(values as any[]));
-      return (result as any[]) ?? [];
-    } catch (err) {
-      console.error("[db] Query failed:", err);
-      return [];
-    }
-  },
-  { raw: () => [] }
-) as any;
+// Safe template literal wrapper that returns empty array on failure
+const safeSql: any = async function sqlTemplate(strings: TemplateStringsArray, ...values: any[]): Promise<any[]> {
+  try {
+    const db = await getSql();
+    const result = await db(strings as any, ...(values as any[]));
+    return (result as any[]) ?? [];
+  } catch (err) {
+    console.error("[db] Query failed:", err?.message || err);
+    return [];
+  }
+};
+
+safeSql.raw = () => [];
 
 export const sql = safeSql;
