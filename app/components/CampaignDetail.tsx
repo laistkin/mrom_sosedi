@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { formatRub, type Campaign } from '../data/campaigns';
-import { readDemoCampaigns } from '../lib/campaigns/demo-campaign-store';
+import { getCampaignById } from '../lib/campaigns/api-campaign-store';
 import { readDemoDonations } from '../lib/donations/demo-donations';
 import { DonationForm } from './DonationForm';
 import { ShareButton } from './ShareButton';
@@ -17,26 +17,15 @@ export function CampaignDetail({
 }) {
   const [campaign, setCampaign] = useState<Campaign | null>(initialCampaign);
 
-  const donationsByCampaign = useMemo(() => {
-    const allDonations = readDemoDonations();
-    const map: Record<string, number> = {};
-    for (const d of allDonations) {
-      if (!map[d.campaignId]) map[d.campaignId] = 0;
-      map[d.campaignId] += d.amount;
-    }
-    return map;
-  }, []);
-
   const getCollected = useMemo(() => {
     if (!campaign) return 0;
-    return donationsByCampaign[campaign.id] || campaign.collected;
-  }, [campaign, donationsByCampaign]);
+    return campaign.collected || 0;
+  }, [campaign]);
 
   useEffect(() => {
-    const storedCampaign = readDemoCampaigns().find(
-      (item) => item.id === campaignId,
-    );
-    setCampaign(storedCampaign || initialCampaign);
+    getCampaignById(campaignId).then((fetched) => {
+      setCampaign(fetched || initialCampaign);
+    });
   }, [campaignId, initialCampaign]);
 
   if (!campaign || campaign.status === 'hidden') {

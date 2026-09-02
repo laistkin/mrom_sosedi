@@ -1,17 +1,19 @@
 import { ReportsClient } from './ReportsClient';
 import { SiteHeader } from '../components/SiteHeader';
-import { defaultSiteContent } from '../lib/site-content/demo-site-content';
+import { getSiteContent } from '../lib/site-content/api-site-content';
 
 export const metadata = {
   title: 'Отчеты | МРОМ Соседи',
   description: 'Отчеты о мероприятиях, расходах и документах МРОМ Соседи.',
 };
 
-export default function ReportsPage() {
+export default async function ReportsPage() {
+  const data = await getSiteContent();
+  const reports = (data?.reports as any[]) || [];
   return (
     <main className="min-h-screen bg-[#f4f5f7] text-[#07111f]">
       <SiteHeader />
-      <ReportsClient initialReports={defaultSiteContent.reports} />
+      <ReportsClient initialReports={reports} />
     </main>
   );
 }

@@ -1,28 +1,22 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { formatRub, type Campaign } from '../data/campaigns';
-import { readDemoCampaigns } from '../lib/campaigns/demo-campaign-store';
-import { readDemoDonations } from '../lib/donations/demo-donations';
+import { getCampaigns, getDonations } from '../lib/campaigns/api-campaign-store';
 import { ShareButton } from './ShareButton';
 
 export function CampaignList({ initialCampaigns }: { initialCampaigns: Campaign[] }) {
   const [campaigns, setCampaigns] = useState(initialCampaigns);
 
   useEffect(() => {
-    setCampaigns(readDemoCampaigns());
+    getCampaigns().then(setCampaigns);
   }, []);
 
   const donationsByCampaign = useMemo(() => {
-    const allDonations = readDemoDonations();
-    const map: Record<string, number> = {};
-    for (const d of allDonations) {
-      if (!map[d.campaignId]) map[d.campaignId] = 0;
-      map[d.campaignId] += d.amount;
-    }
-    return map;
-  }, []);
+    // Donations are now tracked in campaign.donors and campaign.collected fields
+    return {} as Record<string, number>;
+  }, [campaigns]);
 
   const visibleCampaigns = campaigns.filter(
     (campaign) => campaign.status !== 'hidden',

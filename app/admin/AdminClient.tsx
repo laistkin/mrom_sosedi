@@ -3,19 +3,15 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
-import { campaigns as baseCampaigns, formatRub, type Campaign } from '../data/campaigns';
+import { formatRub, type Campaign } from '../data/campaigns';
 import {
   makeCampaignId,
-  readDemoCampaigns,
-  resetDemoCampaigns,
-  saveDemoCampaigns,
-} from '../lib/campaigns/demo-campaign-store';
+  getCampaigns,
+  saveCampaign as apiSaveCampaign,
+  deleteCampaign as apiDeleteCampaign,
+} from '../lib/campaigns/api-campaign-store';
 import {
-  defaultSiteContent,
-  makeReportId,
-  readSiteContent,
-  resetSiteContent,
-  saveSiteContent,
+  saveSiteContent as apiSaveSiteContent,
   type AboutContent,
   type ReportPost,
   type SiteContent,
@@ -25,10 +21,18 @@ import {
   type GalleryImage,
   type TeamMember,
 } from '../lib/site-content/demo-site-content';
-import {
-  readDemoDonations,
-  saveDemoDonation,
-} from '../lib/donations/demo-donations';
+import { getSiteContent as apiGetSiteContent } from '../lib/site-content/api-site-content';
+import { getDonations } from '../lib/donations/api-donations';
+
+const defaultSiteContent: SiteContent = {
+  hero: { subtitle: 'МРОМ Соседи', title: 'Помогаем тем, кто рядом', description: '' },
+  about: { title: 'О нас', description: '', phone: '', email: '', address: '', legalName: '', inn: '', ogrn: '', activities: [], requisites: '' },
+  helpSteps: [{ step: 1, title: '', description: '', icon: '👆' }],
+  faq: [{ question: '', answer: '' }],
+  gallery: [] as GalleryImage[],
+  team: [] as TeamMember[],
+  reports: [] as ReportPost[],
+};
 import { ToastContainer, useToast } from '../components/Toast';
 import { ConfirmModal } from '../components/ConfirmModal';
 
@@ -48,8 +52,12 @@ type CampaignForm = {
   documents: string;
 };
 
-const adminSessionKey = 'mrom_sosedi_admin_session';
-const adminPassword = 'sosedi2026';
+
+
+function makeReportId(title: string) {
+  const slug = title.toLowerCase().replace(/ё/g, 'e').replace(/[^a-zа-я0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 42);
+  return slug || `report-${Date.now()}`;
+}
 const emptyImage =
   'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=1200&q=80';
 
@@ -100,9 +108,11 @@ export function AdminClient() {
   const [isAuthed, setIsAuthed] = useState(false);
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const [campaigns, setCampaigns] = useState<Campaign[]>(baseCampaigns);
-  const [selectedId, setSelectedId] = useState(baseCampaigns[0]?.id || '');
-  const [form, setForm] = useState<CampaignForm>(toForm(baseCampaigns[0]));
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [donationsByCampaign, setDonationsByCampaign] = useState<Record<string, number>>({});
+  const [selectedId, setSelectedId] = useState('');
+  const [form, setForm] = useState<CampaignForm>(toForm());
+  const [notice, setNotice] = useState('');
 
   const [reportTitle, setReportTitle] = useState('');
   const [reportDate, setReportDate] = useState('');
@@ -149,14 +159,35 @@ export function AdminClient() {
   const deleteRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
-    setIsAuthed(window.localStorage.getItem(adminSessionKey) === 'true');
-    const storedCampaigns = readDemoCampaigns();
-    setCampaigns(storedCampaigns);
-    setSelectedId(storedCampaigns[0]?.id || '');
-    setForm(toForm(storedCampaigns[0]));
-    const storedSiteContent = readSiteContent();
-    setSiteContent(storedSiteContent);
-    setAboutForm(storedSiteContent.about);
+    // Check JWT cookie for auth status
+    fetch('/api/admin-auth')
+      .then(r => r.json())
+      .then(data => setIsAuthed(!!data.authenticated))
+      .catch(() => {});
+    (async () => {
+      const storedCampaigns = await getCampaigns();
+      setCampaigns(storedCampaigns);
+      setSelectedId(storedCampaigns[0]?.id || '');
+      setForm(toForm(storedCampaigns[0]));
+      try {
+        const allDonations = await getDonations();
+        const map: Record<string, number> = {};
+        for (const d of allDonations) {
+          if (!map[d.campaignId]) map[d.campaignId] = 0;
+          map[d.campaignId] += Number(d.amount);
+        }
+        setDonationsByCampaign(map);
+      } catch {}
+      // Load site content from API
+      try {
+        const data = await apiGetSiteContent();
+        if (data) {
+          setSiteContent(data as SiteContent);
+          setHeroForm((data as any).hero || defaultSiteContent.hero);
+          setAboutForm((data as any).about || defaultSiteContent.about);
+        }
+      } catch {}
+    })();
   }, []);
 
   const selectedCampaign = useMemo(
@@ -164,15 +195,7 @@ export function AdminClient() {
     [campaigns, selectedId],
   );
 
-  const donationsByCampaign = useMemo(() => {
-    const allDonations = readDemoDonations();
-    const map: Record<string, number> = {};
-    for (const d of allDonations) {
-      if (!map[d.campaignId]) map[d.campaignId] = 0;
-      map[d.campaignId] += d.amount;
-    }
-    return map;
-  }, []);
+
 
   const getCollected = useCallback(
     (campaign: Campaign): number => {
@@ -184,23 +207,25 @@ export function AdminClient() {
     [donationsByCampaign],
   );
 
-  function persist(nextCampaigns: Campaign[], message: string) {
+  async function persist(nextCampaigns: Campaign[], message: string) {
     setCampaigns(nextCampaigns);
-    saveDemoCampaigns(nextCampaigns);
+    for (const c of nextCampaigns) {
+      await apiSaveCampaign(c);
+    }
     toastSuccess(message);
   }
 
   // Hero section handlers
-  function saveHero(event: FormEvent<HTMLFormElement>) {
+  async function saveHero(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const nextContent = { ...siteContent, hero: heroForm };
     setSiteContent(nextContent);
-    saveSiteContent(nextContent);
+    await apiSaveSiteContent(nextContent);
     toastSuccess('Hero-секция главной страницы обновлена.');
   }
 
   // Help steps handlers
-  function addHelpStep(event: FormEvent<HTMLFormElement>) {
+  async function addHelpStep(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!helpStepTitle.trim() || !helpStepDesc.trim()) return;
     const nextContent = {
@@ -216,24 +241,24 @@ export function AdminClient() {
       ],
     };
     setSiteContent(nextContent);
-    saveSiteContent(nextContent);
+    await apiSaveSiteContent(nextContent);
     setHelpStepTitle('');
     setHelpStepDesc('');
     toastSuccess('Шаг добавлен в "Как помочь".');
   }
 
-  function removeHelpStep(index: number) {
+  async function removeHelpStep(index: number) {
     const nextContent = {
       ...siteContent,
       helpSteps: siteContent.helpSteps.filter((_, i) => i !== index),
     };
     setSiteContent(nextContent);
-    saveSiteContent(nextContent);
+    await apiSaveSiteContent(nextContent);
     toastSuccess('Шаг удален из "Как помочь".');
   }
 
   // FAQ handlers
-  function addFAQ(event: FormEvent<HTMLFormElement>) {
+  async function addFAQ(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!faqQuestion.trim() || !faqAnswer.trim()) return;
     const nextContent = {
@@ -241,24 +266,24 @@ export function AdminClient() {
       faq: [...siteContent.faq, { question: faqQuestion.trim(), answer: faqAnswer.trim() }],
     };
     setSiteContent(nextContent);
-    saveSiteContent(nextContent);
+    await apiSaveSiteContent(nextContent);
     setFaqQuestion('');
     setFaqAnswer('');
     toastSuccess('Вопрос добавлен в FAQ.');
   }
 
-  function removeFAQ(index: number) {
+  async function removeFAQ(index: number) {
     const nextContent = {
       ...siteContent,
       faq: siteContent.faq.filter((_, i) => i !== index),
     };
     setSiteContent(nextContent);
-    saveSiteContent(nextContent);
+    await apiSaveSiteContent(nextContent);
     toastSuccess('Вопрос удален из FAQ.');
   }
 
   // Gallery handlers
-  function addGalleryImage(event: FormEvent<HTMLFormElement>) {
+  async function addGalleryImage(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!galleryUrl.trim() || !galleryCaption.trim()) return;
     const nextContent = {
@@ -274,25 +299,25 @@ export function AdminClient() {
       ],
     };
     setSiteContent(nextContent);
-    saveSiteContent(nextContent);
+    await apiSaveSiteContent(nextContent);
     setGalleryUrl('');
     setGalleryCaption('');
     setGalleryDate('');
     toastSuccess('Фото добавлено в галерею.');
   }
 
-  function removeGalleryImage(id: string) {
+  async function removeGalleryImage(id: string) {
     const nextContent = {
       ...siteContent,
       gallery: siteContent.gallery.filter((img) => img.id !== id),
     };
     setSiteContent(nextContent);
-    saveSiteContent(nextContent);
+    await apiSaveSiteContent(nextContent);
     toastSuccess('Фото удалено из галереи.');
   }
 
   // Team handlers
-  function addTeamMember(event: FormEvent<HTMLFormElement>) {
+  async function addTeamMember(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!teamName.trim() || !teamRole.trim()) return;
     const nextContent = {
@@ -309,7 +334,7 @@ export function AdminClient() {
       ],
     };
     setSiteContent(nextContent);
-    saveSiteContent(nextContent);
+    await apiSaveSiteContent(nextContent);
     setTeamName('');
     setTeamRole('');
     setTeamBio('');
@@ -317,25 +342,42 @@ export function AdminClient() {
     toastSuccess('Участник команды добавлен.');
   }
 
-  function removeTeamMember(id: string) {
+  async function removeTeamMember(id: string) {
     const nextContent = {
       ...siteContent,
       team: siteContent.team.filter((m) => m.id !== id),
     };
     setSiteContent(nextContent);
-    saveSiteContent(nextContent);
+    await apiSaveSiteContent(nextContent);
     toastSuccess('Участник команды удален.');
   }
 
-  function login(event: FormEvent<HTMLFormElement>) {
+  async function login(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (password !== adminPassword) {
-      setPasswordError('Неверный пароль. Для прототипа: sosedi2026');
-      return;
+    try {
+      const res = await fetch('/api/admin-auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+      if (!res.ok) {
+        setPasswordError('Неверный пароль');
+        return;
+      }
+      const data = await res.json();
+      setIsAuthed(true);
+      setPasswordError('');
+    } catch {
+      setPasswordError('Ошибка сервера. Попробуйте позже.');
     }
+  }
 
-    window.localStorage.setItem(adminSessionKey, 'true');
-    setIsAuthed(true);
+  async function logout() {
+    try {
+      await fetch('/api/admin-auth', { method: 'DELETE' });
+    } catch {}
+    setIsAuthed(false);
+    setPassword('');
     setPasswordError('');
   }
 
@@ -355,18 +397,23 @@ export function AdminClient() {
     setNotice('');
   }
 
-  function saveCampaign(event: FormEvent<HTMLFormElement>) {
+  async function saveCampaign(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const existing = campaigns.find((campaign) => campaign.id === form.id);
     const nextCampaign = fromForm(form, existing);
     const exists = campaigns.some((campaign) => campaign.id === nextCampaign.id);
-    const nextCampaigns = exists
-      ? campaigns.map((campaign) =>
-          campaign.id === nextCampaign.id ? nextCampaign : campaign,
-        )
-      : [nextCampaign, ...campaigns];
+    let nextCampaigns: Campaign[];
+    if (exists) {
+      nextCampaigns = campaigns.map((campaign) =>
+        campaign.id === nextCampaign.id ? nextCampaign : campaign,
+      );
+    } else {
+      nextCampaigns = [nextCampaign, ...campaigns];
+    }
 
-    persist(nextCampaigns, 'Сбор сохранен. Обновите публичную страницу, чтобы увидеть изменения.');
+    await apiSaveCampaign(nextCampaign);
+    setCampaigns(nextCampaigns);
+    toastSuccess('Сбор сохранен. Обновите публичную страницу, чтобы увидеть изменения.');
     setSelectedId(nextCampaign.id);
     setForm(toForm(nextCampaign));
   }
@@ -387,14 +434,16 @@ export function AdminClient() {
     selectCampaign(copy);
   }
 
-  function openDeleteModal() {
+  async function openDeleteModal() {
     if (!selectedCampaign) return;
-    deleteRef.current = () => {
+    deleteRef.current = async () => {
+      await apiDeleteCampaign(selectedCampaign.id);
       const nextCampaigns = campaigns.filter(
         (campaign) => campaign.id !== selectedCampaign.id,
       );
+      setCampaigns(nextCampaigns);
       const nextSelected = nextCampaigns[0];
-      persist(nextCampaigns, 'Сбор удален.');
+      toastSuccess('Сбор удален.');
       setSelectedId(nextSelected?.id || '');
       setForm(toForm(nextSelected));
     };
@@ -439,29 +488,27 @@ export function AdminClient() {
     setForm(toForm(updatedCampaign));
   }
 
-  function resetAll() {
-    resetDemoCampaigns();
-    resetSiteContent();
-    setCampaigns(baseCampaigns);
-    setSelectedId(baseCampaigns[0]?.id || '');
-    setForm(toForm(baseCampaigns[0]));
-    setSiteContent(defaultSiteContent);
-    setAboutForm(defaultSiteContent.about);
-    toastSuccess('Демо-данные сброшены к исходному состоянию.');
+  async function resetAll() {
+    // Reload campaigns from API
+    const storedCampaigns = await getCampaigns();
+    setCampaigns(storedCampaigns);
+    setSelectedId(storedCampaigns[0]?.id || '');
+    setForm(toForm(storedCampaigns[0]));
+    toastSuccess('Данные перезагружены из базы.');
   }
 
-  function saveAbout(event: FormEvent<HTMLFormElement>) {
+  async function saveAbout(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const nextContent = {
       ...siteContent,
       about: aboutForm,
     };
     setSiteContent(nextContent);
-    saveSiteContent(nextContent);
+    await apiSaveSiteContent(nextContent);
     toastSuccess('Страница «О нас» сохранена. Обновите публичную страницу.');
   }
 
-  function addSiteReport(event: FormEvent<HTMLFormElement>) {
+  async function addSiteReport(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!siteReportForm.title.trim()) {
       return;
@@ -486,7 +533,7 @@ export function AdminClient() {
     };
 
     setSiteContent(nextContent);
-    saveSiteContent(nextContent);
+    await apiSaveSiteContent(nextContent);
     setSiteReportForm({
       title: '',
       date: '',
@@ -499,13 +546,13 @@ export function AdminClient() {
     toastSuccess('Отчет опубликован на странице «Отчеты».');
   }
 
-  function removeSiteReport(id: string) {
+  async function removeSiteReport(id: string) {
     const nextContent = {
       ...siteContent,
       reports: siteContent.reports.filter((report) => report.id !== id),
     };
     setSiteContent(nextContent);
-    saveSiteContent(nextContent);
+    await apiSaveSiteContent(nextContent);
     toastSuccess('Отчет удален из демо-страницы.');
   }
 
@@ -565,6 +612,13 @@ export function AdminClient() {
               type="button"
             >
               Сбросить демо
+            </button>
+            <button
+              className="rounded-full border border-red-200 bg-red-50 text-red-600 px-5 py-3 font-black hover:bg-red-100"
+              onClick={logout}
+              type="button"
+            >
+              Выйти
             </button>
           </div>
         </header>

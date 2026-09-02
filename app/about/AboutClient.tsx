@@ -1,16 +1,30 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import {
-  readSiteContent,
-  type AboutContent,
-} from '../lib/site-content/demo-site-content';
+import { getSiteContent } from '../lib/site-content/api-site-content';
+type AboutContent = {
+  title: string;
+  description: string;
+  activities: string[];
+  phone: string;
+  email: string;
+  address: string;
+  legalName: string;
+  inn: string;
+  ogrn: string;
+  requisites: string;
+};
 
 export function AboutClient({ initialAbout }: { initialAbout: AboutContent }) {
-  const [about, setAbout] = useState(initialAbout);
+  const [about, setAbout] = useState<AboutContent>(initialAbout);
 
   useEffect(() => {
-    setAbout(readSiteContent().about);
+    (async () => {
+      try {
+        const data = await getSiteContent();
+        if (data?.about) setAbout(data.about as AboutContent);
+      } catch {}
+    })();
   }, []);
 
   return (
@@ -52,7 +66,7 @@ export function AboutClient({ initialAbout }: { initialAbout: AboutContent }) {
             </div>
             <div>
               <p className="text-sm font-bold text-white/45">Адрес</p>
-              <p className="mt-1 text-lg font-bold leading-7">{about.address}</p>
+              <p className="mt-1 text-lg font-bold leading-7">{(about as any).address || 'г. Москва, ул. Примерная, д. 1'}</p>
             </div>
           </div>
         </aside>

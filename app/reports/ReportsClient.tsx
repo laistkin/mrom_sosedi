@@ -2,16 +2,27 @@
 
 import { useEffect, useState } from 'react';
 import { formatRub } from '../data/campaigns';
-import {
-  readSiteContent,
-  type ReportPost,
-} from '../lib/site-content/demo-site-content';
+import { getSiteContent } from '../lib/site-content/api-site-content';
+type ReportPost = {
+  id: string;
+  title: string;
+  date: string;
+  image: string;
+  amount: number;
+  text: string;
+  documents: string[];
+};
 
 export function ReportsClient({ initialReports }: { initialReports: ReportPost[] }) {
-  const [reports, setReports] = useState(initialReports);
+  const [reports, setReports] = useState<ReportPost[]>(initialReports);
 
   useEffect(() => {
-    setReports(readSiteContent().reports);
+    (async () => {
+      try {
+        const data = await getSiteContent();
+        if (data?.reports) setReports(data.reports as ReportPost[]);
+      } catch {}
+    })();
   }, []);
 
   return (

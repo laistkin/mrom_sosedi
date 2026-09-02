@@ -3,12 +3,7 @@
 import Link from 'next/link';
 import type { FormEvent } from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import {
-  formatDate,
-  formatRub,
-  readDemoDonations,
-  type DemoDonation,
-} from '../lib/donations/demo-donations';
+import { formatRub, type DemoDonation } from '../lib/donations/demo-donations';
 
 type DemoUser = {
   firstName: string;
@@ -35,7 +30,7 @@ export function AccountClient() {
   const [user, setUser] = useState<DemoUser | null>(null);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [donations, setDonations] = useState<DemoDonation[]>([]);
+  const [donations, setDonations] = useState<any[]>([]);
 
   useEffect(() => {
     const savedUser = window.localStorage.getItem(userStorageKey);
@@ -46,9 +41,18 @@ export function AccountClient() {
       setLastName(parsedUser.lastName);
       setPhone(parsedUser.phone);
       setStep('profile');
-    }
 
-    setDonations(readDemoDonations());
+      // Fetch real donations from API by phone
+      if (parsedUser.phone) {
+        const phoneEncoded = parsedUser.phone.replace(/[^\d+]/g, '');
+        fetch(`/api/donations/${encodeURIComponent(phoneEncoded)}`)
+          .then(r => r.json())
+          .then((data: any) => {
+            if (!Array.isArray(data.error)) setDonations(data);
+          })
+          .catch(console.error);
+      }
+    }
   }, []);
 
   const totalDonated = useMemo(
@@ -303,22 +307,22 @@ export function AccountClient() {
 
             <div className="mt-6 space-y-3">
               {donations.length > 0 ? (
-                donations.map((donation) => (
+                donations.map((donation: any) => (
                   <article
                     className="rounded-[22px] border border-zinc-200 p-4"
                     key={donation.id}
                   >
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div>
-                        <p className="font-black">{donation.campaignTitle}</p>
+                        <p className="font-black">{donation.campaign_title}</p>
                         <p className="mt-1 text-sm font-semibold text-zinc-500">
-                          {formatDate(donation.createdAt)} ·{' '}
+                          {new Date(donation.created_at).toLocaleDateString('ru-RU')} ·{' '}
                           {methodLabel(donation.method)}
                         </p>
                         <p className="mt-2 text-sm text-zinc-500">
                           {donation.anonymous
                             ? 'Анонимное пожертвование'
-                            : `Имя в платеже: ${donation.donorName}`}
+                            : `Имя в платеже: ${donation.donor_name}`}
                         </p>
                       </div>
                       <p className="shrink-0 text-2xl font-black">

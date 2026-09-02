@@ -1,11 +1,27 @@
 'use client';
 
-import { useState } from 'react';
-import { readSiteContent } from '../lib/site-content/demo-site-content';
+import { useEffect, useState } from 'react';
+import { getSiteContent } from '../lib/site-content/api-site-content';
+
+type GalleryImage = {
+  id: string;
+  url: string;
+  caption: string;
+  date: string;
+};
 
 export function GalleryClient() {
-  const gallery = readSiteContent().gallery;
-  const [selectedImage, setSelectedImage] = useState<(typeof gallery)[0] | null>(null);
+  const [gallery, setGallery] = useState<GalleryImage[]>([]);
+  const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const data = await getSiteContent();
+        if (data?.gallery) setGallery(data.gallery as GalleryImage[]);
+      } catch {}
+    })();
+  }, []);
 
   return (
     <div className="mx-auto max-w-6xl px-4 pb-20 pt-12 md:px-8">

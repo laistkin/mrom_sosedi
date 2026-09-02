@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { CampaignDetail } from '../../components/CampaignDetail';
 import { SiteHeader } from '../../components/SiteHeader';
-import { campaigns, getCampaignById } from '../../data/campaigns';
+import { getCampaigns, getCampaignById as apiGetCampaignById } from '../../lib/campaigns/api-campaign-store';
 
 type CampaignPageProps = {
   params: Promise<{
@@ -9,15 +9,23 @@ type CampaignPageProps = {
   }>;
 };
 
-export function generateStaticParams() {
-  return campaigns.map((campaign) => ({ id: campaign.id }));
+export async function generateStaticParams() {
+  const all = await getCampaigns();
+  if (all.length > 0) return all.map((c) => ({ id: c.id }));
+  // Fallback to demo IDs at build time
+  return [
+    { id: 'winter-clothes' },
+    { id: 'ramadan-aid' },
+    { id: 'mosque-renovation' },
+    { id: 'family-support' }
+  ];
 }
 
 export async function generateMetadata({
   params,
 }: CampaignPageProps): Promise<Metadata> {
   const { id } = await params;
-  const campaign = getCampaignById(id);
+  const campaign = await apiGetCampaignById(id);
 
   return {
     title: campaign ? `${campaign.title} | МРОМ Соседи` : 'Сбор | МРОМ Соседи',
@@ -28,7 +36,7 @@ export async function generateMetadata({
 
 export default async function CampaignPage({ params }: CampaignPageProps) {
   const { id } = await params;
-  const campaign = getCampaignById(id);
+  const campaign = await apiGetCampaignById(id);
 
   return (
     <main className="min-h-screen bg-[#f4f5f7] text-[#07111f]">

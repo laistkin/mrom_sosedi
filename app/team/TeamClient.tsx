@@ -1,9 +1,27 @@
 'use client';
 
-import { readSiteContent } from '../lib/site-content/demo-site-content';
+import { useEffect, useState } from 'react';
+import { getSiteContent } from '../lib/site-content/api-site-content';
+
+type TeamMember = {
+  id: string;
+  name: string;
+  role: string;
+  bio: string;
+  photo: string;
+};
 
 export function TeamClient() {
-  const team = readSiteContent().team;
+  const [team, setTeam] = useState<TeamMember[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const data = await getSiteContent();
+        if (data?.team) setTeam(data.team as TeamMember[]);
+      } catch {}
+    })();
+  }, []);
 
   return (
     <div className="mx-auto max-w-6xl px-4 pb-20 pt-12 md:px-8">

@@ -1,11 +1,14 @@
 import Link from 'next/link';
 import { CampaignList } from './components/CampaignList';
 import { SiteHeader } from './components/SiteHeader';
-import { campaigns } from './data/campaigns';
-import { readSiteContent } from './lib/site-content/demo-site-content';
+import { getCampaigns } from './lib/campaigns/api-campaign-store';
+import { getSiteContent } from './lib/site-content/api-site-content';
 
-export default function Home() {
-  const siteContent = readSiteContent();
+export default async function Home() {
+  const [siteContent, campaigns] = await Promise.all([
+    getSiteContent(),
+    getCampaigns()
+  ]);
   return (
     <main className="min-h-screen bg-[#f4f5f7] text-[#07111f]">
       <SiteHeader />
@@ -13,13 +16,13 @@ export default function Home() {
       <section className="mx-auto max-w-6xl px-4 pb-8 pt-12 md:px-8 md:pb-12 md:pt-16">
         <div className="max-w-3xl">
           <p className="mb-4 text-sm font-bold uppercase tracking-[0.18em] text-[#05863a]">
-            {siteContent.hero.subtitle}
+            {(siteContent?.hero as any)?.subtitle || 'МРОМ Соседи'}
           </p>
           <h1 className="text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
-            {siteContent.hero.title}
+            {(siteContent?.hero as any)?.title || 'Помогаем тем, кто рядом'}
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-zinc-700">
-            {siteContent.hero.description}
+            {(siteContent?.hero as any)?.description || 'Поддержите наш центр — и мы продолжим нести добро в нашу общину.'}
           </p>
         </div>
 
