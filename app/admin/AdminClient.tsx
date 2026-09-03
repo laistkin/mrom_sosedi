@@ -161,7 +161,7 @@ export function AdminClient() {
   useEffect(() => {
     // Check JWT cookie for auth status
     fetch('/api/admin-auth')
-      .then(r => r.json())
+      .then(r => r.json() as Promise<{ authenticated?: boolean }>)
       .then(data => setIsAuthed(!!data.authenticated))
       .catch(() => {});
     (async () => {
@@ -364,9 +364,9 @@ export function AdminClient() {
         setPasswordError('Неверный пароль');
         return;
       }
-      const data = await res.json();
-      setIsAuthed(true);
-      setPasswordError('');
+      await res.json();
+      // Reload to pick up the HTTP-only cookie and re-render admin UI
+      window.location.reload();
     } catch {
       setPasswordError('Ошибка сервера. Попробуйте позже.');
     }

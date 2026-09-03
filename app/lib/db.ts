@@ -30,7 +30,7 @@ const safeSql: any = async function sqlTemplate(strings: TemplateStringsArray, .
     const db = await getSql();
     const result = await db(strings as any, ...(values as any[]));
     return (result as any[]) ?? [];
-  } catch (err) {
+  } catch (err: any) {
     console.error("[db] Query failed:", err?.message || err);
     return [];
   }

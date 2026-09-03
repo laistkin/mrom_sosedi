@@ -3,7 +3,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { formatRub, type Campaign } from '../data/campaigns';
-import { getCampaigns, getDonations } from '../lib/campaigns/api-campaign-store';
+import { getCampaigns } from '../lib/campaigns/api-campaign-store';
 import { ShareButton } from './ShareButton';
 
 export function CampaignList({ initialCampaigns }: { initialCampaigns: Campaign[] }) {

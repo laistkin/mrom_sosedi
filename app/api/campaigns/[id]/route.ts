@@ -48,7 +48,7 @@ export async function GET(
         totalDonations: Number(donations[0]?.total_donations || 0),
         totalCollected: Number(donations[0]?.total_collected || 0)
       },
-      recentDonations: recentDonations.map(r => ({
+      recentDonations: recentDonations.map((r: { donor_name?: string; amount?: number | bigint; created_at?: string | Date }) => ({
         donor_name: r.donor_name,
         amount: Number(r.amount),
         created_at: r.created_at
