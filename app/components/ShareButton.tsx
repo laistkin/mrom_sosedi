@@ -21,7 +21,7 @@ export function ShareButton({ title, path, className }: ShareButtonProps) {
     }
 
     navigator.clipboard?.writeText(url);
-    alert('Ссылка на сбор скопирована');
+    alert('Ссылка скопирована! Поделитесь с друзьями');
   }
 
   return (

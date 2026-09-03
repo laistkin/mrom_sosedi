@@ -94,7 +94,7 @@ export function GalleryClient() {
         <div className="rounded-[28px] border border-dashed border-zinc-300 bg-white p-8 md:p-12 text-center">
           <h2 className="text-2xl font-black">Хотите увидеть больше?</h2>
           <p className="mt-4 leading-7 text-zinc-600">
-            Поддержите центр — и мы будем делиться моментами из жизни общины.
+            Поддерживая центр, вы помогаете нам продолжать работу и развивать нашу общину.
           </p>
           <a
             href="/#collections"

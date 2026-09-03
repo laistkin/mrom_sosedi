@@ -18,7 +18,7 @@ export function HowToHelpClient() {
           Как помочь
         </h1>
         <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-zinc-700">
-          Четыре простых шага, чтобы поддержать ваш донат наш центр. Это займёт меньше минуты.
+          Четыре простых шага, чтобы поддержать наш центр. Это займёт меньше минуты.
         </p>
       </section>
 
@@ -51,7 +51,7 @@ export function HowToHelpClient() {
           href="/#collections"
           className="mt-8 inline-block rounded-full bg-[#2f9f6b] px-8 py-4 text-lg font-bold text-white transition-colors hover:bg-[#258a5d]"
         >
-          Перейти к сборам →
+          Поддержать сбор →
         </a>
       </section>
 
@@ -66,7 +66,7 @@ export function HowToHelpClient() {
             href="/faq"
             className="mt-6 inline-block rounded-full border border-[#2f9f6b] px-8 py-4 text-lg font-bold text-[#2f9f6b] transition-colors hover:bg-[#eef6f2]"
           >
-            Читать FAQ →
+            Ответы на вопросы →
           </a>
         </div>
       </section>

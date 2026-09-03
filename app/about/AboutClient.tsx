@@ -41,7 +41,7 @@ export function AboutClient() {
 
       <section className="mt-10 grid gap-5 lg:grid-cols-[minmax(0,1fr)_380px]">
         <div className="rounded-[28px] bg-white p-6 md:p-8">
-          <h2 className="text-2xl font-black">Деятельность центра</h2>
+          <h2 className="text-2xl font-black">Чем мы занимаемся</h2>
           <div className="mt-6 grid gap-3 md:grid-cols-2">
             {about.activities.map((activity) => (
               <div className="rounded-2xl bg-[#f4f5f7] p-5" key={activity}>
@@ -66,7 +66,7 @@ export function AboutClient() {
             </div>
             <div>
               <p className="text-sm font-bold text-white/45">Адрес</p>
-              <p className="mt-1 text-lg font-bold leading-7">{(about as any).address || 'г. Москва, ул. Примерная, д. 1'}</p>
+              <p className="mt-1 text-lg font-bold leading-7">(about as any).address || 'Адрес будет добавлен'</p>
             </div>
           </div>
         </aside>

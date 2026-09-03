@@ -3,8 +3,8 @@ import { SiteHeader } from '../components/SiteHeader';
 import { getSiteContent } from '../lib/site-content/api-site-content';
 
 export const metadata = {
-  title: 'Отчеты | МРОМ Соседи',
-  description: 'Отчеты о мероприятиях, расходах и документах МРОМ Соседи.',
+  title: 'Отчёты | МРОМ Соседи',
+  description: 'Отчёты о мероприятиях, расходах и документах МРОМ Соседи.',
 };
 
 export default async function ReportsPage() {

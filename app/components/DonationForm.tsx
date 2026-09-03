@@ -57,15 +57,15 @@ export function DonationForm({ campaignId, campaignTitle }: DonationFormProps) {
   if (donationId) {
     return (
       <section className="rounded-[28px] bg-white p-6 shadow-[0_24px_70px_rgb(7_17_31/10%)] md:p-8">
-        <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#2f7d5f]">ЮKassa</p>
-        <h2 className="mt-3 text-3xl font-black tracking-tight">Пожертвование принято</h2>
+        <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#2f7d5f]">Оплата</p>
+        <h2 className="mt-3 text-3xl font-black tracking-tight">Спасибо за поддержку!</h2>
         <p className="mt-3 leading-7 text-zinc-600">
-          Спасибо за вашу поддержку! В будущем здесь будет интеграция с реальным платежным шлюзом.
+          Ваш взнос будет направлен на цели этого сбора.
         </p>
         <div className="mt-6 grid gap-3 rounded-[24px] bg-[#f4f5f7] p-5 text-sm font-semibold text-zinc-600 sm:grid-cols-2">
           <div><p className="text-zinc-400">Сумма</p><p className="mt-1 text-2xl font-black text-[#07111f]">{formatRub(amount)}</p></div>
           <div><p className="text-zinc-400">Способ</p><p className="mt-1 text-2xl font-black text-[#07111f]">{methodLabel}</p></div>
-          <div><p className="text-zinc-400">Жертвователь</p><p className="mt-1 text-lg font-black text-[#07111f]">{displayName}</p></div>
+          <div><p className="text-zinc-400">Помощник</p><p className="mt-1 text-lg font-black text-[#07111f]">{displayName}</p></div>
           <div><p className="text-zinc-400">Платеж</p><p className="mt-1 break-all text-lg font-black text-[#07111f]">{donationId}</p></div>
         </div>
         <button className="mt-6 h-14 w-full rounded-full border border-zinc-200 bg-white text-base font-black text-zinc-900" onClick={() => setDonationId(null)} type="button">Сделать еще пожертвование</button>
@@ -77,13 +77,10 @@ export function DonationForm({ campaignId, campaignTitle }: DonationFormProps) {
     <form className="rounded-[28px] bg-white p-5 shadow-[0_24px_70px_rgb(7_17_31/10%)] md:p-7" onSubmit={submitDonation}>
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#2f7d5f]">ЮKassa готовится</p>
-          <h2 className="mt-3 text-3xl font-black tracking-tight">Поддержать проект</h2>
+          <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#2f7d5f]">Оплата</p>
+          <h2 className="mt-3 text-3xl font-black tracking-tight">Поддержать этот сбор</h2>
         </div>
-        <p className="text-sm leading-7 text-zinc-600 mt-2">
-          Укажите телефон для привязки пожертвований к вашему кабинету
-        </p>
-        <span className="rounded-full bg-[#eef6f2] px-3 py-1 text-xs font-black text-[#356f59]">демо</span>
+
       </div>
 
       <div className="mt-4 grid gap-3">
@@ -91,7 +88,7 @@ export function DonationForm({ campaignId, campaignTitle }: DonationFormProps) {
           <input aria-label="Телефон" className="min-w-0 flex-1 bg-transparent py-4 text-lg font-semibold outline-none placeholder:text-zinc-400 disabled:text-zinc-300" onChange={(e) => setPhone(e.target.value.replace(/[^\d+]/g, '').slice(0, 16))} placeholder="Телефон (+7...)" type="tel" value={phone} />
         </div>
         <div className="flex min-h-16 items-center gap-3 rounded-[22px] border border-zinc-200 bg-white px-4">
-          <input className="min-w-0 flex-1 bg-transparent py-4 text-lg font-semibold outline-none placeholder:text-zinc-400 disabled:text-zinc-300" disabled={anonymous} onChange={(e) => setDonorName(e.target.value)} placeholder="Ваше имя (необязательно)" type="text" value={donorName} />
+          <input className="min-w-0 flex-1 bg-transparent py-4 text-lg font-semibold outline-none placeholder:text-zinc-400 disabled:text-zinc-300" disabled={anonymous} onChange={(e) => setDonorName(e.target.value)} placeholder="Имя (необязательно)" type="text" value={donorName} />
           <label className="flex shrink-0 cursor-pointer items-center gap-2 text-sm font-semibold leading-4 text-zinc-500">
             <input checked={anonymous} className="h-6 w-6 accent-[#2f9f6b]" onChange={(e) => setAnonymous(e.target.checked)} type="checkbox" />
             <span>Анонимная<br />помощь</span>
@@ -111,10 +108,11 @@ export function DonationForm({ campaignId, campaignTitle }: DonationFormProps) {
         </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-2 gap-3">
+      {/* TODO: реализовать выбор режима — единоразовый / регулярный платёж (месячные списания) */}
+      {/* <div className="mt-6 grid grid-cols-2 gap-3">
         <button className="h-16 rounded-[22px] bg-[#07111f] text-base font-black text-white" type="button">Единоразово</button>
         <button className="h-16 rounded-[22px] border border-zinc-200 bg-white text-base font-black text-zinc-400" disabled type="button">Регулярно · позже</button>
-      </div>
+      </div> */}
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <button className={`flex h-16 items-center gap-3 rounded-[20px] border px-4 text-left text-base font-black ${method === 'bank_card' ? 'border-[#dceee5] bg-[#eef6f2]' : 'border-zinc-200 bg-white'}`} onClick={() => setMethod('bank_card')} type="button">
@@ -127,12 +125,12 @@ export function DonationForm({ campaignId, campaignTitle }: DonationFormProps) {
 
       <label className="mt-5 flex cursor-pointer items-start gap-3 text-sm leading-6 text-zinc-500">
         <input checked={accepted} className="mt-1 h-5 w-5 accent-[#2f9f6b]" onChange={(e) => { setAccepted(e.target.checked); setShowAcceptError(false); }} type="checkbox" />
-        <span>Принимаю условия обработки персональных данных и понимаю, что сейчас используется демонстрационный платеж без списания средств.</span>
+        <span>Принимаю условия обработки персональных данных.</span>
       </label>
       {showAcceptError ? <p className="mt-2 text-sm font-semibold text-red-600">Отметьте чекбокс, чтобы продолжить</p> : null}
 
       <button className="mt-6 h-16 w-full rounded-full bg-[#2f9f6b] text-lg font-black text-white shadow-[0_16px_34px_rgb(47_159_107/18%)] disabled:bg-zinc-300 disabled:shadow-none" disabled={!canSubmit} type="submit">
-        {isSubmitting ? 'Создаем платеж...' : 'Поддержать'}
+        {isSubmitting ? 'Почти готово...' : 'Поддержать этот сбор'}
       </button>
     </form>
   );

@@ -6,6 +6,18 @@ import { formatRub, type Campaign } from '../data/campaigns';
 import { getCampaigns } from '../lib/campaigns/api-campaign-store';
 import { ShareButton } from './ShareButton';
 
+function declension(n: number, forms: string[]): string {
+  // n % 100 > 10 && n % 100 < 15 → форма 2 (gen. plural)
+  // n % 10 === 1 → форма 0 (nominative singular), но не 11
+  // иначе → форма 1 (genitive singular)
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod100 >= 11 && mod100 <= 19) return `${n} ${forms[2]}`;
+  if (mod10 === 1) return `${n} ${forms[0]}`;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 > 20)) return `${n} ${forms[1]}`;
+  return `${n} ${forms[2]}`;
+}
+
 export function CampaignList({ initialCampaigns }: { initialCampaigns: Campaign[] }) {
   const [campaigns, setCampaigns] = useState(initialCampaigns);
 
@@ -72,19 +84,19 @@ export function CampaignList({ initialCampaigns }: { initialCampaigns: Campaign[
                   className="grid h-14 place-items-center rounded-full bg-[#2f9f6b] text-base font-black text-white shadow-[0_12px_28px_rgb(47_159_107/18%)]"
                   href={`/campaigns/${campaign.id}#donation-preview`}
                 >
-                  Помочь
+                  Поддержать
                 </a>
               </div>
 
               <div className="mt-5 grid grid-cols-2 gap-5">
                 <div>
-                  <p className="text-sm font-semibold text-zinc-400">нужно</p>
+                  <p className="text-sm font-semibold text-zinc-400">цель</p>
                   <p className="mt-1 text-3xl font-black tracking-tight">
                     {formatRub(campaign.needed)}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-semibold text-zinc-400">собрали</p>
+                  <p className="text-sm font-semibold text-zinc-400">собрано</p>
                   <p className="mt-1 text-3xl font-black tracking-tight">
                     {formatRub(collected)}
                   </p>
@@ -106,8 +118,8 @@ export function CampaignList({ initialCampaigns }: { initialCampaigns: Campaign[
               </a>
 
               <div className="mt-5 flex items-center justify-between border-t border-zinc-200 pt-4 text-sm font-semibold text-zinc-400">
-                <span>{campaign.donors} поддержали</span>
-                <span>{campaign.comments} комментариев</span>
+                <span>{declension(campaign.donors, ['человек поддержал', 'человека поддержали', 'человек поддержали'])}</span>
+                <span className="text-right">{declension(campaign.comments, ['комментарий', 'комментария', 'комментариев'])}</span>
               </div>
             </div>
           </article>

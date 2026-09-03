@@ -8,6 +8,15 @@ import { readDemoDonations } from '../lib/donations/demo-donations';
 import { DonationForm } from './DonationForm';
 import { ShareButton } from './ShareButton';
 
+function declension(n: number, forms: string[]): string {
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return `${n} ${forms[0]}`;
+  if (mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14))
+    return `${n} ${forms[1]}`;
+  return `${n} ${forms[2]}`;
+}
+
 export function CampaignDetail({
   campaignId,
   initialCampaign,
@@ -62,7 +71,7 @@ export function CampaignDetail({
           <span aria-hidden="true" className="text-3xl leading-none">
             ←
           </span>
-          Пожертвовать другим сборам
+          К другим сборам
         </a>
       </div>
 
@@ -82,19 +91,19 @@ export function CampaignDetail({
               className="grid h-14 place-items-center rounded-full bg-[#2f9f6b] text-base font-black text-white shadow-[0_12px_28px_rgb(47_159_107/18%)]"
               href="#donation-preview"
             >
-              Помочь
+              Поддержать
             </a>
           </div>
 
           <div className="mt-6 grid grid-cols-2 gap-5">
             <div>
-              <p className="text-sm font-semibold text-zinc-400">нужно</p>
+              <p className="text-sm font-semibold text-zinc-400">Цель</p>
               <p className="mt-1 text-4xl font-black tracking-tight">
                 {formatRub(campaign.needed)}
               </p>
             </div>
             <div className="text-right">
-              <p className="text-sm font-semibold text-zinc-400">собрали</p>
+              <p className="text-sm font-semibold text-zinc-400">Собрано</p>
               <p className="mt-1 text-4xl font-black tracking-tight">
                 {formatRub(getCollected)}
               </p>
@@ -108,7 +117,7 @@ export function CampaignDetail({
             />
           </div>
           <p className="mt-3 text-sm font-semibold text-zinc-500">
-            Собрано {percent}% от цели. Поддержали {campaign.donors} человек.
+            {declension(campaign.donors, ['помощник', 'помощника', 'помощников'])} · {percent}% собрано
           </p>
         </div>
       </section>
@@ -150,11 +159,11 @@ export function CampaignDetail({
                   key={document}
                 >
                   <span className="font-semibold">{document}</span>
-                  <span className="text-sm font-bold text-zinc-400">скоро</span>
+                  <span className="text-sm font-bold text-zinc-400">будут добавлены</span>
                 </div>
               ))
             ) : (
-              <p className="leading-7 text-zinc-600">Документы пока не добавлены.</p>
+              <p className="leading-7 text-zinc-600">Здесь появятся документы, подтверждающие легитимность сбора.</p>
             )}
           </div>
         </div>
@@ -173,7 +182,7 @@ export function CampaignDetail({
               ))
             ) : (
               <p className="leading-7 text-zinc-600">
-                Отчеты появятся после первых расходов по этому сбору.
+                Здесь появится отчёт: сколько собрано и как были потрачены средства.
               </p>
             )}
           </div>

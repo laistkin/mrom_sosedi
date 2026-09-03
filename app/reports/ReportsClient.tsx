@@ -29,14 +29,13 @@ export function ReportsClient({ initialReports }: { initialReports: ReportPost[]
     <div className="mx-auto max-w-6xl px-4 py-12 md:px-8 md:py-16">
       <section className="max-w-3xl">
         <p className="mb-4 text-sm font-bold uppercase tracking-[0.18em] text-[#05863a]">
-          Отчеты
+          Отчёты
         </p>
         <h1 className="text-4xl font-black leading-tight tracking-tight md:text-6xl">
-          Прозрачность расходов и мероприятий
+          Наши отчёты о работе
         </h1>
         <p className="mt-6 text-xl leading-9 text-zinc-700">
-          Здесь публикуются проведенные мероприятия, потраченные средства,
-          фотографии и документы, которые можно обновлять через админ-панель.
+          Мы публикуем здесь отчёты о мероприятиях, тратах, а также фотографии и документы.
         </p>
       </section>
 

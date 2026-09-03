@@ -70,7 +70,7 @@ export function AccountClient() {
     event.preventDefault();
 
     if (code.trim() !== demoSmsCode) {
-      setCodeError('Для прототипа используйте код 1234');
+      setCodeError('Код неверный. Попробуйте ещё раз.');
       return;
     }
 
@@ -109,27 +109,20 @@ export function AccountClient() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 md:px-8 md:py-14">
       <div className="max-w-3xl">
-        <p className="mb-4 text-sm font-bold uppercase tracking-[0.18em] text-[#05863a]">
-          Кабинет жертвователя
-        </p>
         <h1 className="text-4xl font-black leading-tight tracking-tight md:text-5xl">
-          История помощи и простой вход по телефону
+          Ваша история помощи
         </h1>
-        <p className="mt-5 text-lg leading-8 text-zinc-700">
-          Сейчас это демо-регистрация. Позже этот экран можно подключить к
-          SMS-провайдеру, T-ID и SberID без изменения основной логики кабинета.
-        </p>
+
       </div>
 
       {step !== 'profile' ? (
-        <section className="mt-8 grid gap-5 md:grid-cols-[minmax(0,1fr)_320px]">
+        <section className="mt-8 grid gap-5">
           <div className="rounded-[28px] bg-white p-5 shadow-[0_24px_70px_rgb(7_17_31/10%)] md:p-7">
             {step === 'phone' ? (
               <form onSubmit={requestCode}>
-                <h2 className="text-2xl font-black">Войти или зарегистрироваться</h2>
+                <h2 className="text-2xl font-black">Вход по телефону</h2>
                 <p className="mt-3 leading-7 text-zinc-600">
-                  Введите телефон. В прототипе SMS не отправляется, следующий
-                  экран покажет демо-код.
+                  Введите номер телефона. На него будет отправлен код подтверждения.
                 </p>
 
                 <label className="mt-6 block">
@@ -149,14 +142,7 @@ export function AccountClient() {
                     disabled
                     type="button"
                   >
-                    T-ID · позже
-                  </button>
-                  <button
-                    className="h-14 rounded-[20px] border border-zinc-200 bg-white text-base font-black text-zinc-400"
-                    disabled
-                    type="button"
-                  >
-                    SberID · позже
+                    Другой способ · скоро
                   </button>
                 </div>
 
@@ -166,9 +152,9 @@ export function AccountClient() {
               </form>
             ) : (
               <form onSubmit={confirmCode}>
-                <h2 className="text-2xl font-black">Введите SMS-код</h2>
+                <h2 className="text-2xl font-black">Проверьте телефон</h2>
                 <p className="mt-3 leading-7 text-zinc-600">
-                  Для демонстрации используйте код <strong>1234</strong>.
+                  На номер отправлено SMS с кодом подтверждения. Введите его здесь.
                 </p>
 
                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
@@ -225,17 +211,6 @@ export function AccountClient() {
               </form>
             )}
           </div>
-
-          <aside className="rounded-[28px] bg-[#07111f] p-6 text-white">
-            <p className="text-sm font-bold uppercase tracking-[0.18em] text-white/50">
-              Заглушки
-            </p>
-            <h2 className="mt-3 text-2xl font-black">Что будет позже</h2>
-            <p className="mt-4 leading-7 text-white/70">
-              Реальная отправка SMS, вход через T-ID и SberID, синхронизация
-              пожертвований с webhook ЮKassa и база данных.
-            </p>
-          </aside>
         </section>
       ) : (
         <section className="mt-8 grid gap-5 lg:grid-cols-[340px_minmax(0,1fr)]">
@@ -253,7 +228,7 @@ export function AccountClient() {
             </div>
 
             <div className="mt-7 rounded-[24px] bg-[#e8f7ef] p-5">
-              <p className="text-sm font-bold text-[#006d2f]">Всего пожертвовано</p>
+              <p className="text-sm font-bold text-[#006d2f]">Вы помогли на</p>
               <p className="mt-2 text-4xl font-black tracking-tight">
                 {formatRub(totalDonated)}
               </p>
@@ -299,9 +274,9 @@ export function AccountClient() {
               </div>
               <a
                 className="rounded-full bg-[#2f9f6b] px-5 py-3 text-sm font-black text-white"
-                href="/#collections"
+                href="/how-to-help"
               >
-                Помочь
+                Поддержать сборы
               </a>
             </div>
 
@@ -322,7 +297,7 @@ export function AccountClient() {
                         <p className="mt-2 text-sm text-zinc-500">
                           {donation.anonymous
                             ? 'Анонимное пожертвование'
-                            : `Имя в платеже: ${donation.donor_name}`}
+                            : `${donation.donor_name}`}
                         </p>
                       </div>
                       <p className="shrink-0 text-2xl font-black">
@@ -333,10 +308,9 @@ export function AccountClient() {
                 ))
               ) : (
                 <div className="rounded-[24px] bg-[#f4f5f7] p-6">
-                  <p className="text-xl font-black">Пока нет пожертвований</p>
+                  <p className="text-xl font-black">Начните помогать!</p>
                   <p className="mt-3 leading-7 text-zinc-600">
-                    Сделайте демо-пожертвование на странице любого сбора, и оно
-                    появится здесь.
+                    Выберите сбор и нажмите «Поддержать» — ваше пожертвование появится здесь.
                   </p>
                 </div>
               )}

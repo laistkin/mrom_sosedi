@@ -22,7 +22,7 @@ export default async function Home() {
             {(siteContent?.hero as any)?.title || 'Помогаем тем, кто рядом'}
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-zinc-700">
-            {(siteContent?.hero as any)?.description || 'Поддержите наш центр — и мы продолжим нести добро в нашу общину.'}
+            {(siteContent?.hero as any)?.description || 'Поддержите исламский центр, где проходят молитвы и лекции, распространяются знания о религии и реализуются социальные и просветительские проекты для нашей общины.'}
           </p>
         </div>
 
@@ -32,7 +32,7 @@ export default async function Home() {
           </span>
           <input
             className="h-full min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-zinc-400"
-            placeholder="Поиск по названию сбора"
+            placeholder="Поиск по сборам"
             type="search"
           />
         </label>
@@ -46,74 +46,55 @@ export default async function Home() {
       >
         <div className="rounded-[28px] border border-dashed border-zinc-300 bg-white p-6 md:p-8">
           <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#05863a]">
-            Платежный путь
+            Как помочь
           </p>
           <h2 className="mt-3 text-2xl font-black tracking-tight">
-            Форма пожертвования уже внутри каждого сбора
+            Пожертвовать можно прямо на странице сбора
           </h2>
           <p className="mt-3 max-w-2xl leading-7 text-zinc-600">
-            Нажмите “Помочь” на любой карточке: сайт откроет страницу сбора и
-            сразу приведет к форме с СБП, картой онлайн и демо-заглушкой ЮKassa.
+            Выберите сбор, нажмите «Поддержать» и внесите пожертвование удобным способом — через СБП или банковской картой.
           </p>
         </div>
       </section>
 
       <section className="mx-auto grid max-w-6xl gap-4 px-4 pb-16 md:grid-cols-3 md:px-8">
         <a className="rounded-[24px] bg-white p-6 hover:shadow-[0_18px_45px_rgb(7_17_31/8%)]" href="/how-to-help">
-          <p className="text-sm font-bold uppercase tracking-[0.18em] text-zinc-400">
-            Раздел
-          </p>
           <h2 className="mt-3 text-xl font-black">Как помочь</h2>
           <p className="mt-3 leading-7 text-zinc-600">
             Пошаговое руководство по пожертвованиям и поддержке центра.
           </p>
         </a>
         <a className="rounded-[24px] bg-white p-6 hover:shadow-[0_18px_45px_rgb(7_17_31/8%)]" href="/faq">
-          <p className="text-sm font-bold uppercase tracking-[0.18em] text-zinc-400">
-            Раздел
-          </p>
           <h2 className="mt-3 text-xl font-black">Частые вопросы</h2>
           <p className="mt-3 leading-7 text-zinc-600">
             Ответы на популярные вопросы о пожертвованиях и отчётности.
           </p>
         </a>
         <a className="rounded-[24px] bg-white p-6 hover:shadow-[0_18px_45px_rgb(7_17_31/8%)]" href="/gallery">
-          <p className="text-sm font-bold uppercase tracking-[0.18em] text-zinc-400">
-            Раздел
-          </p>
           <h2 className="mt-3 text-xl font-black">Галерея</h2>
           <p className="mt-3 leading-7 text-zinc-600">
-            Фотографии мероприятий, занятий и жизни центра.
+            Фото с мероприятий, занятий и повседневной работы центра.
           </p>
         </a>
       </section>
 
       <section className="mx-auto grid max-w-6xl gap-4 px-4 pb-16 md:grid-cols-3 md:px-8">
         <a className="rounded-[24px] bg-white p-6 hover:shadow-[0_18px_45px_rgb(7_17_31/8%)]" href="/about" id="about">
-          <p className="text-sm font-bold uppercase tracking-[0.18em] text-zinc-400">
-            Раздел
-          </p>
           <h2 className="mt-3 text-xl font-black">О нас</h2>
           <p className="mt-3 leading-7 text-zinc-600">
-            Информация о МРОМ, контактах, реквизитах и юридических данных.
+            Вся важная информация о МРОМ «Соседи»: контакты, реквизиты и официальные данные.
           </p>
         </a>
         <a className="rounded-[24px] bg-white p-6 hover:shadow-[0_18px_45px_rgb(7_17_31/8%)]" href="/reports" id="reports">
-          <p className="text-sm font-bold uppercase tracking-[0.18em] text-zinc-400">
-            Раздел
-          </p>
           <h2 className="mt-3 text-xl font-black">Отчеты</h2>
           <p className="mt-3 leading-7 text-zinc-600">
-            Посты с фото, документами, мероприятиями и потраченными средствами.
+            Фото, документы и информация о том, как используются пожертвования.
           </p>
         </a>
         <a className="rounded-[24px] bg-white p-6 hover:shadow-[0_18px_45px_rgb(7_17_31/8%)]" href="/team">
-          <p className="text-sm font-bold uppercase tracking-[0.18em] text-zinc-400">
-            Раздел
-          </p>
           <h2 className="mt-3 text-xl font-black">Команда</h2>
           <p className="mt-3 leading-7 text-zinc-600">
-            Люди, которые стоят за проектом местного исламского центра.
+            Те, кто развивает МРОМ «Соседи», организует работу центра и помогает нашей общине.
           </p>
         </a>
       </section>

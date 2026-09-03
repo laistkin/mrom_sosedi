@@ -33,9 +33,9 @@ export function SiteHeader() {
   const navLinks = [
     { href: '/', label: 'Сборы' },
     { href: '/how-to-help', label: 'Как помочь' },
-    { href: '/faq', label: 'FAQ' },
+    { href: '/faq', label: 'Частые вопросы' },
     { href: '/about', label: 'О нас' },
-    { href: '/reports', label: 'Отчеты' },
+    { href: '/reports', label: 'Отчёты' },
     { href: '/gallery', label: 'Галерея' },
     { href: '/team', label: 'Команда' },
   ];
